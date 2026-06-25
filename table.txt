@@ -1,0 +1,23 @@
+authors
+- id (PK)
+- name
+- email
+
+users
+- id (PK)
+- name
+- email
+
+posts
+- id (PK)
+- title
+- content
+- timestamp
+- author_id (FK → authors.id)
+
+comments
+- id (PK)
+- content
+- timestamp
+- post_id (FK → posts.id)
+- user_id (FK → users.id)

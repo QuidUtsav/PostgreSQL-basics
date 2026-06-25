@@ -1,0 +1,27 @@
+CREATE TABLE authors (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE posts(
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content VARCHAR(600) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    author_id INTEGER REFERENCES authors(id)
+);
+
+CREATE TABLE comments(
+    id SERIAL PRIMARY KEY,
+    content VARCHAR(600) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    post_id INTEGER REFERENCES posts(id),
+    user_id INTEGER REFERENCES users(id)
+);
