@@ -1,27 +1,4 @@
-CREATE TABLE authors (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(20) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL
-);
-
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(20) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL
-);
-
-CREATE TABLE posts(
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(200) NOT NULL,
-    content VARCHAR(600) NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    author_id INTEGER REFERENCES authors(id)
-);
-
-CREATE TABLE comments(
-    id SERIAL PRIMARY KEY,
-    content VARCHAR(600) NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    post_id INTEGER REFERENCES posts(id),
-    user_id INTEGER REFERENCES users(id)
-);
+INSERT INTO authors (name, email) VALUES ('Aarav Sharma', 'aarav@example.com');
+INSERT INTO users (name,email) VALUES ('Ramesh Dalle', ' ramesh@g.com');
+INSERT INTO posts (title,content) VALUES ('My first blog', 'This is my first blog post.');
+INSERT INTO comments (content) VALUES ('Best of luck for your journey');
