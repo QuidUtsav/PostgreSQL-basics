@@ -1,6 +1,6 @@
 from fastapi import FastAPI,HTTPException, Depends
 from database import SessionLocal, Account, Post, Comment
-from schemas import CreateAccount, CreatePost, CreateComment
+from schemas import CreateAccount, CreatePost, CreateComment, AccountResponse
 from sqlalchemy.exc import IntegrityError
 from auth import hash_password
 
@@ -13,12 +13,12 @@ def get_db():
         
 app = FastAPI()
 
-@app.get("/accounts")
+@app.get("/accounts",response_model=list[AccountResponse])
 def get_account(db= Depends(get_db)):
     account = db.query(Account).all()
     return account
 
-@app.post("/accounts")
+@app.post("/accounts", response_model= AccountResponse)
 def create_account(account:CreateAccount, db = Depends(get_db)):
     new_account = Account(name = account.name, 
                           email = account.email,

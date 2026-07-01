@@ -5,6 +5,15 @@ class CreateAccount(BaseModel):
     email:EmailStr
     hashed_password : str
     role : str
+    
+class AccountResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+    role: str
+
+    class Config:
+        from_attributes = True
 
 class CreatePost(BaseModel):
     title:str
