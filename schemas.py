@@ -1,21 +1,10 @@
 from pydantic import BaseModel, EmailStr
 
-class CreateAuthor(BaseModel):
+class CreateAccount(BaseModel):
     name: str
     email:EmailStr
-
-class CreateUser(BaseModel):
-    name: str
-    email: EmailStr
-    password: str
-
-class UserOut(BaseModel):
-    id: int
-    name: str
-    email: EmailStr
-
-    class Config:
-        from_attributes = True
+    hashed_password : str
+    role : str
 
 class CreatePost(BaseModel):
     title:str

@@ -1,6 +1,6 @@
 from fastapi import FastAPI,HTTPException, Depends
-from database import SessionLocal, Author, User, Post, Comment
-from schemas import CreateAuthor, CreateUser, CreatePost, CreateComment, UserOut
+from database import SessionLocal, Account, Post, Comment
+from schemas import CreateAccount, CreatePost, CreateComment
 from sqlalchemy.exc import IntegrityError
 from auth import hash_password
 
@@ -13,38 +13,18 @@ def get_db():
         
 app = FastAPI()
 
-@app.get("/authors")
-def get_authors(db= Depends(get_db)):
-    authors = db.query(Author).all()
-    return authors
+@app.get("/accounts")
+def get_account(db= Depends(get_db)):
+    account = db.query(Account).all()
+    return account
 
-@app.post("/authors")
-def create_author(author:CreateAuthor, db = Depends(get_db)):
-    new_author = Author(name = author.name, email = author.email)
-    db.add(new_author)
+@app.post("/accounts")
+def create_account(account:CreateAccount, db = Depends(get_db)):
+    new_account = Account(name = account.name, email = account.email)
+    db.add(new_account)
     db.commit()
-    db.refresh(new_author)
-    return new_author
-
-@app.get("/users")
-def get_users(db = Depends(get_db)):
-    users = db.query(User).all()    
-    return users
-@app.post("/users", response_model=UserOut)
-def create_user(user: CreateUser, db=Depends(get_db)):
-    new_user = User(
-        name=user.name,
-        email=user.email,
-        hashed_password=hash_password(user.password)
-    )
-    db.add(new_user)
-    try:
-        db.commit()
-    except IntegrityError:
-        db.rollback()
-        raise HTTPException(status_code=400, detail="Email already registered")
-    db.refresh(new_user)
-    return new_user
+    db.refresh(new_account)
+    return new_account
 
 
 @app.get("/posts")
@@ -53,13 +33,13 @@ def get_posts(db = Depends(get_db)):
     return posts
 @app.post("/posts")
 def create_post(post: CreatePost, db = Depends(get_db)):
-    new_post = Post(title = post.title, content = post.content, author_id = post.author_id)
+    new_post = Post(title = post.title, content = post.content, account_id = post.account_id)
     db.add(new_post)
     try:
         db.commit()
     except IntegrityError:
         db.rollback()
-        raise HTTPException(status_code=404, detail="Author not found")
+        raise HTTPException(status_code=404, detail="Account not found")
     db.refresh(new_post)
     return new_post
     
