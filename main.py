@@ -1,8 +1,8 @@
 from fastapi import FastAPI,HTTPException, Depends
 from database import SessionLocal, Account, Post, Comment
-from schemas import CreateAccount, CreatePost, CreateComment, AccountResponse
+from schemas import CreateAccount, CreatePost, CreateComment, AccountResponse,LoginRequest
 from sqlalchemy.exc import IntegrityError
-from auth import hash_password
+from auth import hash_password,verify_password,create_access_token
 
 def get_db():
     db = SessionLocal()
@@ -63,3 +63,17 @@ def create_comment(comment: CreateComment, db = Depends(get_db)):
     db.refresh(new_comment)
     return new_comment
 
+@app.post("/login")
+def login(login: LoginRequest, db = Depends(get_db)):
+    account = db.query(Account).filter(Account.email == login.email).first()
+    
+    if account is None:
+        raise HTTPException(status_code=404, detail="account not found")
+    
+    else:
+        if verify_password(login.password, account.hashed_password):
+            token = create_access_token({"sub": str(account.id)})
+            return {"access_token": token, "token_type": "bearer"}
+        else:
+            raise HTTPException(status_code=401, detail="password incorrect.")
+        
